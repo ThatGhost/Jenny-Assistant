@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jenny.front", "Jenny-front\Jenny.front.csproj", "{81605A48-EC5B-4207-BDAC-7CDD46575A77}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jenny.Core", "Jenny.Core\Jenny.Core.csproj", "{7996A221-B620-4074-9E8D-875BEBE184C1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{81605A48-EC5B-4207-BDAC-7CDD46575A77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81605A48-EC5B-4207-BDAC-7CDD46575A77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81605A48-EC5B-4207-BDAC-7CDD46575A77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81605A48-EC5B-4207-BDAC-7CDD46575A77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7996A221-B620-4074-9E8D-875BEBE184C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7996A221-B620-4074-9E8D-875BEBE184C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7996A221-B620-4074-9E8D-875BEBE184C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7996A221-B620-4074-9E8D-875BEBE184C1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AE107903-ABCA-4B85-B0CC-C4F6D5E1047B}
+	EndGlobalSection
+EndGlobal
