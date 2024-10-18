@@ -37,7 +37,7 @@ namespace Jenny_front
 
             VoiceSynthWrapper voiceSynthWrapper = host.Services.GetService<VoiceSynthWrapper>()!;
             var googleApiKey = builder.Configuration["Google:ApiKey"]; // secret api key
-            voiceSynthWrapper.GoogleVoiceApiKey = googleApiKey!;
+            voiceSynthWrapper.SetGoogleApiKey(googleApiKey!);
 
             Console.WriteLine("Setup complete");
 

@@ -8,10 +8,9 @@ namespace Jenny.Core
     public class VoiceSynthWrapper
     {
         //private readonly SpeechSynthesizer synthesizer;
-        private readonly TextToSpeechClient textToSpeechClient;
-        private readonly VoiceSelectionParams voiceSelectionParams;
+        private TextToSpeechClient textToSpeechClient;
+        private VoiceSelectionParams voiceSelectionParams;
         private readonly AudioConfig audioConfig;
-        public string GoogleVoiceApiKey { private get; set; }
 
         public VoiceSynthWrapper()
         {
@@ -20,15 +19,19 @@ namespace Jenny.Core
             synthesizer.SetOutputToDefaultAudioDevice();
             */
 
+            audioConfig = new AudioConfig { AudioEncoding = AudioEncoding.Linear16 };
+        }
+
+        public void SetGoogleApiKey(string GoogleVoiceApiKey)
+        {
             TextToSpeechClientBuilder builder = new TextToSpeechClientBuilder();
             builder.ApiKey = GoogleVoiceApiKey;
             textToSpeechClient = builder.Build();
             voiceSelectionParams = new VoiceSelectionParams
             {
                 LanguageCode = "en-US",
-                SsmlGender = SsmlVoiceGender.Neutral
+                SsmlGender = SsmlVoiceGender.Female,
             };
-            audioConfig = new AudioConfig { AudioEncoding = AudioEncoding.Linear16 };
         }
 
         public void Speak(string command)
