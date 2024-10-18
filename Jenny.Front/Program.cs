@@ -18,29 +18,30 @@ namespace Jenny_front
 
             Installer.Install(builder.Services);
 
-            StartListening(builder);
+            InitializeCore(builder);
         }
 
-        static void StartListening(HostApplicationBuilder builder)
+        static void InitializeCore(HostApplicationBuilder builder)
         {
             using IHost host = builder.Build();
 
-            DictationBuilder dictationChoicesBuilder = host.Services.GetService<DictationBuilder>()!;
-            dictationChoicesBuilder.ClearDictations();
+            // initialize dictation builder
+            DictationBuilder dictationBuilder = host.Services.GetService<DictationBuilder>()!;
             CC_Entry entry = host.Services.GetService<CC_Entry>()!;
-            dictationChoicesBuilder.EntryCommand = entry;
-            dictationChoicesBuilder.AddCommandPath(entry);
+            dictationBuilder.EntryCommand = entry; // for stop command
+            dictationBuilder.AddCommandPath(entry); // for now
 
-            SpeechRecognizer speechWrapper = host.Services.GetService<SpeechRecognizer>()!;
-            dictationChoicesBuilder.updateGrammerFunction = speechWrapper.UpdateGrammar;
-            speechWrapper.UpdateGrammar();
+            // initialize speech recognizer
+            SpeechRecognizer speechRecognizer = host.Services.GetService<SpeechRecognizer>()!;
+            dictationBuilder.updateGrammerFunction = speechRecognizer.UpdateGrammar; // update the grammar when stop is done
+            speechRecognizer.UpdateGrammar();
 
-            VoiceSynthesizer voiceSynthWrapper = host.Services.GetService<VoiceSynthesizer>()!;
-            var googleApiKey = builder.Configuration["Google:ApiKey"]; // secret api key
-            voiceSynthWrapper.SetTTSApiKey(googleApiKey!);
+            // initialize voice synthesizer
+            VoiceSynthesizer voiceSynthesizer = host.Services.GetService<VoiceSynthesizer>()!;
+            var googleTTSApiKey = builder.Configuration["Google:ApiKey"]; // secret api key
+            voiceSynthesizer.SetTTSApiKey(googleTTSApiKey!);
 
-            Console.WriteLine("Setup complete");
-
+            Console.WriteLine("Setup complete, you can speak now");
             Console.ReadLine();
         }
     }
