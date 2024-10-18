@@ -14,7 +14,6 @@ namespace Jenny.front.CommandChoices
             VoiceSynthWrapper voiceSynth,
             DictationChoicesBuilder dictationChoicesBuilder,
             SpeechRecognitionWrapper speechWrapper,
-            
             CC_Config config)
         {
             this.voiceSynth = voiceSynth;
@@ -25,9 +24,9 @@ namespace Jenny.front.CommandChoices
 
             triggers = new Dictionary<string, DictationChoicesBuilder.SpeechAction>()
             {
-                { "Hey Jenny", () => { onEntry("Hey Ibn, Do you need anything?"); } },
-                { "Jenny are you there", () => { onEntry("Yes i am here, Anything you want?"); } },
-                { "Jenny you there", () => { onEntry("Yes right here. Is there anything you need"); } }
+                { "Hey Jenny", (string s) => { onEntry("Hey Ibn, Do you need anything?"); } },
+                { "Jenny are you there", (string s) => { onEntry("Yes i am here, Anything you want?"); } },
+                { "Jenny you there", (string s) => { onEntry("Yes right here. Is there anything you need"); } }
             };
         }
 
@@ -37,7 +36,7 @@ namespace Jenny.front.CommandChoices
 
             dictationChoicesBuilder.Clear();
             dictationChoicesBuilder.AddCommandChoice(configChoice);
-            dictationChoicesBuilder.AddScentence("No", () => { dictationChoicesBuilder.Clear(); dictationChoicesBuilder.AddCommandChoice(this); speechWrapper.UpdateGrammar(); });
+            dictationChoicesBuilder.AddScentence("No", (string s) => { dictationChoicesBuilder.Clear(); dictationChoicesBuilder.AddCommandChoice(this); speechWrapper.UpdateGrammar(); });
 
             speechWrapper.UpdateGrammar();
         }

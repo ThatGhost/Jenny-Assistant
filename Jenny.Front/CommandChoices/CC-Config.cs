@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Jenny.Core;
+using Jenny.front.Services;
 
 namespace Jenny.front.CommandChoices
 {
@@ -13,15 +14,22 @@ namespace Jenny.front.CommandChoices
         private readonly VoiceSynthWrapper voiceSynth;
         private readonly DictationChoicesBuilder dictationChoicesBuilder;
         private readonly SpeechRecognitionWrapper speechWrapper;
+        private readonly VolumeService volumeService;
+        private readonly LogService logService;
 
         public CC_Config(
             VoiceSynthWrapper voiceSynth,
             DictationChoicesBuilder dictationChoicesBuilder,
-            SpeechRecognitionWrapper speechRecognitionWrapper)
+            SpeechRecognitionWrapper speechRecognitionWrapper,
+            VolumeService volumeService,
+            LogService logService
+            )
         {
+            this.logService = logService;
             this.voiceSynth = voiceSynth;
             this.dictationChoicesBuilder = dictationChoicesBuilder;
             this.speechWrapper = speechRecognitionWrapper;
+            this.volumeService = volumeService;
 
             triggers = new Dictionary<string, DictationChoicesBuilder.SpeechAction>
             {
@@ -34,21 +42,20 @@ namespace Jenny.front.CommandChoices
             };
         }
 
-        private void OnConfig()
+        private void OnConfig(string data)
         {
             voiceSynth.SpeakAndWrite("Ok, what do you want to update?");
 
             dictationChoicesBuilder.Clear();
-            dictationChoicesBuilder.AddScentence("volume up", () => { voiceSynth.VolumeUp(); Console.WriteLine("Volume: " + voiceSynth.Volume); });
-            dictationChoicesBuilder.AddScentence("volume down", () => { voiceSynth.VolumeDown(); Console.WriteLine("Volume: " + voiceSynth.Volume); });
+            dictationChoicesBuilder.AddScentence("volume up", (string o) => { volumeService.VolumeUp(); logService.LogAssistant("Volume: " + volumeService.Volume); });
+            dictationChoicesBuilder.AddScentence("volume down", (string o) => { volumeService.VolumeDown(); logService.LogAssistant("Volume: " + volumeService.Volume); });
+            dictationChoicesBuilder.AddScentence("set volume", (string o) => { logService.LogAssistant("Volume: " + volumeService.Volume); });
             speechWrapper.UpdateGrammar();
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Volume: " + voiceSynth.Volume);
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine(" - volume up");
-            Console.WriteLine(" - volume down");
-            Console.ForegroundColor = ConsoleColor.Gray;
+            logService.LogWithColor($"Volume: {volumeService.Volume}", ConsoleColor.Green);
+            logService.LogWithColor($"- Volume up ", ConsoleColor.Cyan);
+            logService.LogWithColor($"- Volume down ", ConsoleColor.Cyan);
+            logService.LogWithColor($"- Set Volume ", ConsoleColor.Cyan);
         }
     }
 }

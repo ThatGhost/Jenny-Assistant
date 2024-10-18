@@ -9,12 +9,24 @@ namespace Jenny.Core
 {
     public class DictationChoicesBuilder
     {
-        public delegate void SpeechAction();
+        public delegate void SpeechAction(string o);
+        public delegate void UpdateGrammar();
+
+
         Dictionary<string, SpeechAction> scentencesActions = new Dictionary<string, SpeechAction>();
-        public CommandChoice EntryCommand { get; set; }
+        public CommandChoice? EntryCommand { private get; set; }
+        public UpdateGrammar updateGrammar { private get; set; }
+
         public CancellationToken Token { get; set; }
 
-        public DictationChoicesBuilder() { }
+        private readonly LogService logService;
+
+        public DictationChoicesBuilder(
+            LogService logService
+            ) 
+        {
+            this.logService = logService; 
+        }
 
         public void AddScentence(string scentence, SpeechAction action)
         {
@@ -35,15 +47,23 @@ namespace Jenny.Core
             }
         }
 
+        public void NumbersBetween(int min, int max, SpeechAction action)
+        {
+            for (int i = min; i <= max; i++)
+            {
+                scentencesActions.Add($"{i}", action);
+            }
+        }
+
         public void InvokeAction(string scentence)
         {
             if (!scentencesActions.ContainsKey(scentence))
             {
-                Console.WriteLine("HUH??? I AINT HEAR YOU");
+                logService.LogWithColor("Unrecognised command", ConsoleColor.Red);
                 return;
             }
 
-            scentencesActions[scentence].Invoke();
+            scentencesActions[scentence].Invoke(scentence);
         }
 
         public Grammar BuildGrammar()
@@ -61,11 +81,12 @@ namespace Jenny.Core
 
         private void addStop()
         {
-            scentencesActions.Add("Stop", () =>
+            scentencesActions.Add("Stop", (string o) =>
             {
-                Console.WriteLine("Stop command given");
+                logService.LogUser("Stop command given!");
                 Clear();
-                AddCommandChoice(EntryCommand);
+                AddCommandChoice(EntryCommand!);
+                updateGrammar.Invoke();
             });
         }
     }

@@ -4,19 +4,23 @@ namespace Jenny.Core
 {
     public class SpeechRecognitionWrapper
     {
-        private SpeechRecognitionEngine recognizer;
-        private DictationChoicesBuilder choicesBuilder;
+        private readonly SpeechRecognitionEngine recognizer;
+        private readonly DictationChoicesBuilder choicesBuilder;
+        private readonly LogService logService;
 
-        public SpeechRecognitionWrapper(DictationChoicesBuilder builder) {
-            choicesBuilder = builder;
+        public SpeechRecognitionWrapper(
+            DictationChoicesBuilder builder,
+            LogService logService
+        ) {
+            this.choicesBuilder = builder;
+            this.logService = logService;
 
             recognizer = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("en-US"));
 
-            builder.AddScentence("Hey", () => { Console.WriteLine("NOTHING ADDED TO SPEECH"); });
+            builder.AddScentence("Hey", (string s) => { logService.LogWithColor("NOTHING ADDED TO SPEECH", ConsoleColor.Red); });
             recognizer.LoadGrammar(builder.BuildGrammar());
 
-            recognizer.SpeechRecognized +=
-                new EventHandler<SpeechRecognizedEventArgs>(recognizer_SpeechRecognized);
+            recognizer.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(recognizer_SpeechRecognized);
 
             recognizer.SetInputToDefaultAudioDevice();
             recognizer.RecognizeAsync(RecognizeMode.Multiple);
@@ -35,7 +39,7 @@ namespace Jenny.Core
 
         private void recognizer_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
-            Console.WriteLine($"You: {e.Result.Text}");
+            logService.LogUser($"You: {e.Result.Text}");
             choicesBuilder.InvokeAction(e.Result.Text);
         }
     }

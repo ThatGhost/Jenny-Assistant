@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Jenny.Core;
 using Jenny.front.CommandChoices;
+using Jenny.front.Services;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -19,6 +20,9 @@ namespace Jenny.front
             Services.AddSingleton<DictationChoicesBuilder>();
             Services.AddSingleton<SpeechRecognitionWrapper>();
             Services.AddSingleton<VoiceSynthWrapper>();
+            Services.AddTransient<LogService>();
+
+            Services.AddTransient<VolumeService>();
 
             Services.AddTransient<CC_Entry>();
             Services.AddTransient<CC_Config>();

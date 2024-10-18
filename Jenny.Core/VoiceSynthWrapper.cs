@@ -8,7 +8,6 @@ namespace Jenny.Core
     public class VoiceSynthWrapper
     {
         //private readonly SpeechSynthesizer synthesizer;
-        private readonly CoreAudioDevice defaultPlaybackDevice;
         private readonly TextToSpeechClient textToSpeechClient;
         private readonly VoiceSelectionParams voiceSelectionParams;
         private readonly AudioConfig audioConfig;
@@ -19,7 +18,6 @@ namespace Jenny.Core
             synthesizer = new SpeechSynthesizer();
             synthesizer.SetOutputToDefaultAudioDevice();
             */
-            defaultPlaybackDevice = new CoreAudioController().DefaultPlaybackDevice;
 
             TextToSpeechClientBuilder builder = new TextToSpeechClientBuilder();
             builder.ApiKey = "AIzaSyDtMJ3Im6YoHiRPqMK11tkXXro3Aoipg0I";
@@ -65,19 +63,6 @@ namespace Jenny.Core
             Speak(command);
         }
 
-        public void VolumeUp()
-        {
-            if(defaultPlaybackDevice.Volume <= 95)
-            defaultPlaybackDevice.Volume += 5;
-        }
-
-        public void VolumeDown()
-        {
-            if (defaultPlaybackDevice.Volume >= 5)
-                defaultPlaybackDevice.Volume -= 5;
-        }
-
-        public double Volume { get { return defaultPlaybackDevice.Volume; } }
 
         //public void Stop() => synthesizer.Dispose();
     }
