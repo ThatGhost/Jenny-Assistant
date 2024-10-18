@@ -25,19 +25,19 @@ namespace Jenny_front
         {
             using IHost host = builder.Build();
 
-            DictationChoicesBuilder dictationChoicesBuilder = host.Services.GetService<DictationChoicesBuilder>()!;
-            dictationChoicesBuilder.Clear();
+            DictationBuilder dictationChoicesBuilder = host.Services.GetService<DictationBuilder>()!;
+            dictationChoicesBuilder.ClearDictations();
             CC_Entry entry = host.Services.GetService<CC_Entry>()!;
             dictationChoicesBuilder.EntryCommand = entry;
-            dictationChoicesBuilder.AddCommandChoice(entry);
+            dictationChoicesBuilder.AddCommandPath(entry);
 
-            SpeechRecognitionWrapper speechWrapper = host.Services.GetService<SpeechRecognitionWrapper>()!;
+            SpeechRecognizer speechWrapper = host.Services.GetService<SpeechRecognizer>()!;
             dictationChoicesBuilder.updateGrammerFunction = speechWrapper.UpdateGrammar;
             speechWrapper.UpdateGrammar();
 
-            VoiceSynthWrapper voiceSynthWrapper = host.Services.GetService<VoiceSynthWrapper>()!;
+            VoiceSynthesizer voiceSynthWrapper = host.Services.GetService<VoiceSynthesizer>()!;
             var googleApiKey = builder.Configuration["Google:ApiKey"]; // secret api key
-            voiceSynthWrapper.SetGoogleApiKey(googleApiKey!);
+            voiceSynthWrapper.SetTTSApiKey(googleApiKey!);
 
             Console.WriteLine("Setup complete");
 

@@ -9,18 +9,18 @@ using Jenny.front.Services;
 
 namespace Jenny.front.CommandChoices
 {
-    public class CC_Config : CommandChoice
+    public class CC_Config : CommandPath
     {
-        private readonly VoiceSynthWrapper voiceSynth;
-        private readonly DictationChoicesBuilder dictationChoicesBuilder;
-        private readonly SpeechRecognitionWrapper speechWrapper;
+        private readonly VoiceSynthesizer voiceSynth;
+        private readonly DictationBuilder dictationChoicesBuilder;
+        private readonly SpeechRecognizer speechWrapper;
         private readonly VolumeService volumeService;
         private readonly LogService logService;
 
         public CC_Config(
-            VoiceSynthWrapper voiceSynth,
-            DictationChoicesBuilder dictationChoicesBuilder,
-            SpeechRecognitionWrapper speechRecognitionWrapper,
+            VoiceSynthesizer voiceSynth,
+            DictationBuilder dictationChoicesBuilder,
+            SpeechRecognizer speechRecognitionWrapper,
             VolumeService volumeService,
             LogService logService
             )
@@ -31,7 +31,7 @@ namespace Jenny.front.CommandChoices
             this.speechWrapper = speechRecognitionWrapper;
             this.volumeService = volumeService;
 
-            triggers = new Dictionary<string, DictationChoicesBuilder.SpeechAction>
+            speechActions = new Dictionary<string, DictationBuilder.SpeechAction>
             {
                 { "I want to update some of your config", OnConfig },
                 { "update config", OnConfig },
@@ -46,7 +46,7 @@ namespace Jenny.front.CommandChoices
         {
             voiceSynth.SpeakAndWrite("Ok, what do you want to update?");
 
-            dictationChoicesBuilder.Clear();
+            dictationChoicesBuilder.ClearDictations();
             dictationChoicesBuilder.AddScentence("volume up", (string o) => { volumeService.VolumeUp(); logService.LogAssistant("Volume: " + volumeService.Volume); });
             dictationChoicesBuilder.AddScentence("volume down", (string o) => { volumeService.VolumeDown(); logService.LogAssistant("Volume: " + volumeService.Volume); });
             dictationChoicesBuilder.AddScentence("set volume", (string o) => { SetVolume(); });
@@ -62,8 +62,8 @@ namespace Jenny.front.CommandChoices
         private void SetVolume()
         {
             voiceSynth.SpeakAndWrite("What Volume do you want it?");
-            dictationChoicesBuilder.Clear();
-            dictationChoicesBuilder.NumbersBetween(1,100, (string awnser) =>
+            dictationChoicesBuilder.ClearDictations();
+            dictationChoicesBuilder.DictateNumbersBetween(1,100, (string awnser) =>
             {
                 int volume = int.Parse(awnser);
                 volumeService.SetVolume(volume);

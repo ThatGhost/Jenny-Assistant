@@ -2,23 +2,23 @@
 
 namespace Jenny.front.CommandChoices
 {
-    public class CC_SpanishHelp : CommandChoice
+    public class CC_SpanishHelp : CommandPath
     {
-        private readonly VoiceSynthWrapper voiceSynthWrapper;
-        private readonly DictationChoicesBuilder dictationChoicesBuilder;
-        private readonly SpeechRecognitionWrapper speechRecognitionWrapper;
+        private readonly VoiceSynthesizer voiceSynthWrapper;
+        private readonly DictationBuilder dictationChoicesBuilder;
+        private readonly SpeechRecognizer speechRecognitionWrapper;
 
         public CC_SpanishHelp(
-            VoiceSynthWrapper voiceSynthWrapper,
-            DictationChoicesBuilder dictationChoicesBuilder,
-            SpeechRecognitionWrapper speechRecognitionWrapper
+            VoiceSynthesizer voiceSynthWrapper,
+            DictationBuilder dictationChoicesBuilder,
+            SpeechRecognizer speechRecognitionWrapper
             ) 
         {
             this.voiceSynthWrapper = voiceSynthWrapper;
             this.dictationChoicesBuilder = dictationChoicesBuilder;
             this.speechRecognitionWrapper = speechRecognitionWrapper;
 
-            triggers = new Dictionary<string, DictationChoicesBuilder.SpeechAction>()
+            speechActions = new Dictionary<string, DictationBuilder.SpeechAction>()
             {
                 { "Let's practice some spanish", startSpanishPractice },
                 { "Let's do some spanish", startSpanishPractice },
@@ -42,7 +42,7 @@ namespace Jenny.front.CommandChoices
                 voiceSynthWrapper.UpdateLanguage("en-US");
             };
 
-            dictationChoicesBuilder.Clear();
+            dictationChoicesBuilder.ClearDictations();
             dictationChoicesBuilder.AddScentence("Hola", (string s) => { voiceSynthWrapper.SpeakAndWrite("Hola Ivan, como estas"); });
             speechRecognitionWrapper.UpdateGrammar();
         }

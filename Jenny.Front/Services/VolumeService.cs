@@ -19,13 +19,13 @@ namespace Jenny.front.Services
 
         public void VolumeUp()
         {
-            if (defaultPlaybackDevice.Volume <= 95)
+            if (defaultPlaybackDevice.Volume < 95)
                 defaultPlaybackDevice.Volume += 5;
         }
 
         public void VolumeDown()
         {
-            if (defaultPlaybackDevice.Volume >= 5)
+            if (defaultPlaybackDevice.Volume > 5)
                 defaultPlaybackDevice.Volume -= 5;
         }
 

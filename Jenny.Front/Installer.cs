@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Google.Api;
+
 using Jenny.Core;
 using Jenny.front.CommandChoices;
 using Jenny.front.Services;
@@ -15,18 +17,31 @@ namespace Jenny.front
 {
     public class Installer
     {
-        public static void Install(IServiceCollection Services)
+        public static void Install(IServiceCollection services)
         {
-            Services.AddSingleton<DictationChoicesBuilder>();
-            Services.AddSingleton<SpeechRecognitionWrapper>();
-            Services.AddSingleton<VoiceSynthWrapper>();
+            AddCore(services);
+            AddServices(services);
+            AddCommandPaths(services);
+        }
+
+        private static void AddCore(IServiceCollection Services)
+        {
+            Services.AddSingleton<DictationBuilder>();
+            Services.AddSingleton<SpeechRecognizer>();
+            Services.AddSingleton<VoiceSynthesizer>();
             Services.AddTransient<LogService>();
+        }
 
+        private static void AddServices(IServiceCollection Services)
+        {
             Services.AddTransient<VolumeService>();
+        }
 
-            Services.AddTransient<CC_Entry>();
-            Services.AddTransient<CC_Config>();
-            Services.AddTransient<CC_SpanishHelp>();
+        private static void AddCommandPaths(IServiceCollection services)
+        {
+            services.AddTransient<CC_Entry>();
+            services.AddTransient<CC_Config>();
+            services.AddTransient<CC_SpanishHelp>();
         }
     }
 }

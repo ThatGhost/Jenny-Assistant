@@ -2,19 +2,19 @@
 
 namespace Jenny.front.CommandChoices
 {
-    public class CC_Entry : CommandChoice
+    public class CC_Entry : CommandPath
     {
-        private readonly VoiceSynthWrapper voiceSynth;
-        private readonly DictationChoicesBuilder dictationChoicesBuilder;
-        private readonly SpeechRecognitionWrapper speechWrapper;
+        private readonly VoiceSynthesizer voiceSynth;
+        private readonly DictationBuilder dictationChoicesBuilder;
+        private readonly SpeechRecognizer speechWrapper;
 
         CC_Config configChoice;
         CC_SpanishHelp spanishHelp;
 
         public CC_Entry(
-            VoiceSynthWrapper voiceSynth,
-            DictationChoicesBuilder dictationChoicesBuilder,
-            SpeechRecognitionWrapper speechWrapper,
+            VoiceSynthesizer voiceSynth,
+            DictationBuilder dictationChoicesBuilder,
+            SpeechRecognizer speechWrapper,
             CC_Config config,
             CC_SpanishHelp spanishHelp)
         {
@@ -25,7 +25,7 @@ namespace Jenny.front.CommandChoices
             this.configChoice = config;
             this.spanishHelp = spanishHelp;
 
-            triggers = new Dictionary<string, DictationChoicesBuilder.SpeechAction>()
+            speechActions = new Dictionary<string, DictationBuilder.SpeechAction>()
             {
                 { "Hey Jenny", (string s) => { onEntry("Hey Ibn, Do you need anything?"); } },
                 { "Jenny are you there", (string s) => { onEntry("Yes i am here, Anything you want?"); } },
@@ -37,10 +37,10 @@ namespace Jenny.front.CommandChoices
         {
             voiceSynth.SpeakAndWrite(awnser);
 
-            dictationChoicesBuilder.Clear();
-            dictationChoicesBuilder.AddCommandChoice(configChoice);
-            dictationChoicesBuilder.AddCommandChoice(spanishHelp);
-            dictationChoicesBuilder.AddScentence("No", (string s) => { dictationChoicesBuilder.Clear(); dictationChoicesBuilder.AddCommandChoice(this); speechWrapper.UpdateGrammar(); });
+            dictationChoicesBuilder.ClearDictations();
+            dictationChoicesBuilder.AddCommandPath(configChoice);
+            dictationChoicesBuilder.AddCommandPath(spanishHelp);
+            dictationChoicesBuilder.AddScentence("No", (string s) => { dictationChoicesBuilder.ClearDictations(); dictationChoicesBuilder.AddCommandPath(this); speechWrapper.UpdateGrammar(); });
             dictationChoicesBuilder.AddScentence("Clear the screen", (string s) => Console.Clear());
 
             speechWrapper.UpdateGrammar();

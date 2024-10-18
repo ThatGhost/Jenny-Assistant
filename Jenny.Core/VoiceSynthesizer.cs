@@ -5,33 +5,30 @@ using NAudio.Wave;
 
 namespace Jenny.Core
 {
-    public class VoiceSynthWrapper
+    public class VoiceSynthesizer
     {
-        //private readonly SpeechSynthesizer synthesizer;
         private TextToSpeechClient textToSpeechClient;
         private VoiceSelectionParams voiceSelectionParams;
         private readonly AudioConfig audioConfig;
+        private readonly LogService logService;
 
-        public VoiceSynthWrapper()
+        public VoiceSynthesizer(LogService logService)
         {
-            /*
-            synthesizer = new SpeechSynthesizer();
-            synthesizer.SetOutputToDefaultAudioDevice();
-            */
+            this.logService = logService;
 
             audioConfig = new AudioConfig { AudioEncoding = AudioEncoding.Linear16 };
-        }
-
-        public void SetGoogleApiKey(string GoogleVoiceApiKey)
-        {
-            TextToSpeechClientBuilder builder = new TextToSpeechClientBuilder();
-            builder.ApiKey = GoogleVoiceApiKey;
-            textToSpeechClient = builder.Build();
             voiceSelectionParams = new VoiceSelectionParams
             {
                 LanguageCode = "en-US",
                 SsmlGender = SsmlVoiceGender.Female,
             };
+        }
+
+        public void SetTTSApiKey(string GoogleVoiceApiKey)
+        {
+            TextToSpeechClientBuilder builder = new TextToSpeechClientBuilder();
+            builder.ApiKey = GoogleVoiceApiKey;
+            textToSpeechClient = builder.Build();
         }
 
         public void UpdateLanguage(string language)
@@ -43,11 +40,9 @@ namespace Jenny.Core
             };
         }
 
-        public void Speak(string command)
+        public void Speak(string text)
         {
-            var input = new SynthesisInput { Text = command };
-
-            // Get the response without using a 'using' statement
+            var input = new SynthesisInput { Text = text };
             var response = textToSpeechClient.SynthesizeSpeech(input, voiceSelectionParams, audioConfig);
 
             // Use MemoryStream to play audio
@@ -70,13 +65,8 @@ namespace Jenny.Core
 
         public void SpeakAndWrite(string command)
         {
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(" - "+command);
-            Console.ForegroundColor = ConsoleColor.Gray;
+            logService.LogAssistant(" - " + command);
             Speak(command);
         }
-
-
-        //public void Stop() => synthesizer.Dispose();
     }
 }

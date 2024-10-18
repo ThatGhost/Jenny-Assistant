@@ -8,69 +8,76 @@ using System.Threading.Tasks;
 
 namespace Jenny.Core
 {
-    public class DictationChoicesBuilder
+    public class DictationBuilder
     {
         public delegate void SpeechAction(string o);
         public delegate void NoParamDelegate();
 
 
-        Dictionary<string, SpeechAction> scentencesActions = new Dictionary<string, SpeechAction>();
-        public CommandChoice? EntryCommand { private get; set; }
+        private Dictionary<string, SpeechAction> dictations = new Dictionary<string, SpeechAction>();
+
+        // for updating languages
+        internal CultureInfo cultureInfo { private get; set; }
+
+        // On stop
+        public CommandPath? EntryCommand { private get; set; }
         public NoParamDelegate updateGrammerFunction;
         public NoParamDelegate onStop;
-        public CultureInfo cultureInfo { private get; set; }
 
+        // logging what you say
         private readonly LogService logService;
 
-        public DictationChoicesBuilder(
+        public DictationBuilder(
             LogService logService
             ) 
         {
             this.logService = logService; 
         }
 
+        public void ClearDictations()
+        {
+            dictations.Clear();
+            addStopCommand();
+        }
+
         public void AddScentence(string scentence, SpeechAction action)
         {
-            scentencesActions.Add(scentence, action);
+            dictations.Add(scentence, action);
         }
 
-        public void Clear()
+        public void AddCommandPath(CommandPath commandPath)
         {
-            scentencesActions.Clear();
-            addStop();
-        }
-
-        public void AddCommandChoice(CommandChoice commandChoice)
-        {
-            foreach (var choice in commandChoice.triggers)
+            foreach (var ath in commandPath.speechActions)
             {
-                scentencesActions.Add(choice.Key, choice.Value);
+                dictations.Add(ath.Key, ath.Value);
             }
         }
 
-        public void NumbersBetween(int min, int max, SpeechAction action)
+        public void DictateNumbersBetween(int min, int max, SpeechAction action)
         {
             for (int i = min; i <= max; i++)
             {
-                scentencesActions.Add($"{i}", action);
+                dictations.Add($"{i}", action);
             }
         }
 
-        public void InvokeAction(string scentence)
+
+        // Use in core
+        internal void InvokeAction(string scentence)
         {
-            if (!scentencesActions.ContainsKey(scentence))
+            if (!dictations.ContainsKey(scentence))
             {
                 logService.LogWithColor("Unrecognised command", ConsoleColor.Red);
                 return;
             }
 
-            scentencesActions[scentence].Invoke(scentence);
+            dictations[scentence].Invoke(scentence);
         }
 
-        public Grammar BuildGrammar()
+        internal Grammar BuildGrammar()
         {
             Choices commands = new();
-            commands.Add(scentencesActions.Keys.ToArray());
+            commands.Add(dictations.Keys.ToArray());
 
             // builder
             GrammarBuilder grammarBuilder = new GrammarBuilder();
@@ -81,15 +88,15 @@ namespace Jenny.Core
             return new Grammar(grammarBuilder);
         }
 
-        private void addStop()
+        private void addStopCommand()
         {
-            scentencesActions.Add("Stop", (string o) =>
+            dictations.Add("Stop", (string o) =>
             {
                 logService.LogUser("Stop command given!");
 
                 // start from beginning
-                Clear();
-                AddCommandChoice(EntryCommand!);
+                ClearDictations();
+                AddCommandPath(EntryCommand!);
 
                 // trigger any distructors
                 if(onStop != null && onStop.GetInvocationList().Length > 0)
