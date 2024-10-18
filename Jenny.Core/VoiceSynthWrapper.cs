@@ -20,7 +20,7 @@ namespace Jenny.Core
             */
 
             TextToSpeechClientBuilder builder = new TextToSpeechClientBuilder();
-            builder.ApiKey = "AIzaSyDtMJ3Im6YoHiRPqMK11tkXXro3Aoipg0I";
+            builder.ApiKey = "--REDACTED--";
             textToSpeechClient = builder.Build();
             voiceSelectionParams = new VoiceSelectionParams
             {
