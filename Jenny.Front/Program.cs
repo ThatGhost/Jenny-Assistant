@@ -1,38 +1,39 @@
-﻿
-using System;
-using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
-using System.Speech.Recognition;
-using System.Threading.Tasks;
-
+﻿using Microsoft.Extensions.DependencyInjection;
 using Jenny.Core;
+using Jenny.front.CommandChoices;
+using Microsoft.Extensions.Hosting;
+using Jenny.front;
+
 namespace Jenny_front
 {
     internal class Program
     {
+        private static CancellationToken CancellationToken { get; set; }
+
         static void Main(string[] args)
         {
+            HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
+            Installer.Install(builder.Services);
 
-            DictationChoicesBuilder dictationChoicesBuilder = new DictationChoicesBuilder();
-            dictationChoicesBuilder.AddScentence("Hey are you there?", onAreYouThere);
-            dictationChoicesBuilder.AddScentence("You have a coffee?", onYouHaveCoffee);
+            StartListening(builder);
+        }
 
-            SpeechWrapper speechWrapper = new SpeechWrapper(dictationChoicesBuilder);
+        static void StartListening(HostApplicationBuilder builder)
+        {
+            using IHost host = builder.Build();
+
+            DictationChoicesBuilder dictationChoicesBuilder = host.Services.GetService<DictationChoicesBuilder>()!;
+            dictationChoicesBuilder.Clear();
+            CC_Entry entry = host.Services.GetService<CC_Entry>()!;
+            dictationChoicesBuilder.EntryCommand = entry;
+            dictationChoicesBuilder.AddCommandChoice(entry);
+
+            SpeechRecognitionWrapper speechWrapper = host.Services.GetService<SpeechRecognitionWrapper>()!;
+            speechWrapper.UpdateGrammar();
 
             Console.WriteLine("Setup complete");
 
             Console.ReadLine();
-            speechWrapper.StopSpeechRegonition();
-        }
-
-        static void onAreYouThere()
-        {
-            Console.WriteLine("Yes i am here");
-        }
-        
-        static void onYouHaveCoffee()
-        {
-            Console.WriteLine("We are all out, sorry");
         }
     }
 }

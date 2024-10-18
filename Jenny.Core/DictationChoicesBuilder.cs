@@ -11,6 +11,8 @@ namespace Jenny.Core
     {
         public delegate void SpeechAction();
         Dictionary<string, SpeechAction> scentencesActions = new Dictionary<string, SpeechAction>();
+        public CommandChoice EntryCommand { get; set; }
+        public CancellationToken Token { get; set; }
 
         public DictationChoicesBuilder() { }
 
@@ -19,7 +21,21 @@ namespace Jenny.Core
             scentencesActions.Add(scentence, action);
         }
 
-        public void invokeAction(string scentence)
+        public void Clear()
+        {
+            scentencesActions.Clear();
+            addStop();
+        }
+
+        public void AddCommandChoice(CommandChoice commandChoice)
+        {
+            foreach (var choice in commandChoice.triggers)
+            {
+                scentencesActions.Add(choice.Key, choice.Value);
+            }
+        }
+
+        public void InvokeAction(string scentence)
         {
             if (!scentencesActions.ContainsKey(scentence))
             {
@@ -41,6 +57,16 @@ namespace Jenny.Core
 
             // build
             return new Grammar(grammarBuilder);
+        }
+
+        private void addStop()
+        {
+            scentencesActions.Add("Stop", () =>
+            {
+                Console.WriteLine("Stop command given");
+                Clear();
+                AddCommandChoice(EntryCommand);
+            });
         }
     }
 }

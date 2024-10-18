@@ -1,24 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System;
-using System.Speech.Recognition;
-using System.Threading.Tasks;
+﻿using System.Speech.Recognition;
 
 namespace Jenny.Core
 {
-    public class SpeechWrapper
+    public class SpeechRecognitionWrapper
     {
         private SpeechRecognitionEngine recognizer;
         private DictationChoicesBuilder choicesBuilder;
 
-        public SpeechWrapper(DictationChoicesBuilder builder) {
+        public SpeechRecognitionWrapper(DictationChoicesBuilder builder) {
             choicesBuilder = builder;
 
             recognizer = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("en-US"));
 
+            builder.AddScentence("Hey", () => { Console.WriteLine("NOTHING ADDED TO SPEECH"); });
             recognizer.LoadGrammar(builder.BuildGrammar());
 
             recognizer.SpeechRecognized +=
@@ -28,6 +22,11 @@ namespace Jenny.Core
             recognizer.RecognizeAsync(RecognizeMode.Multiple);
         }
 
+        public void UpdateGrammar()
+        {
+            recognizer.LoadGrammar(choicesBuilder.BuildGrammar());
+        }
+
         public void StopSpeechRegonition()
         {
             recognizer.Dispose();
@@ -35,7 +34,7 @@ namespace Jenny.Core
 
         private void recognizer_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
-            choicesBuilder.invokeAction(e.Result.Text);
+            choicesBuilder.InvokeAction(e.Result.Text);
         }
     }
 }
