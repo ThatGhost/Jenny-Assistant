@@ -9,18 +9,21 @@ namespace Jenny.front.CommandChoices
         private readonly SpeechRecognitionWrapper speechWrapper;
 
         CC_Config configChoice;
+        CC_SpanishHelp spanishHelp;
 
         public CC_Entry(
             VoiceSynthWrapper voiceSynth,
             DictationChoicesBuilder dictationChoicesBuilder,
             SpeechRecognitionWrapper speechWrapper,
-            CC_Config config)
+            CC_Config config,
+            CC_SpanishHelp spanishHelp)
         {
             this.voiceSynth = voiceSynth;
             this.dictationChoicesBuilder = dictationChoicesBuilder;
             this.speechWrapper = speechWrapper;
 
             this.configChoice = config;
+            this.spanishHelp = spanishHelp;
 
             triggers = new Dictionary<string, DictationChoicesBuilder.SpeechAction>()
             {
@@ -36,7 +39,9 @@ namespace Jenny.front.CommandChoices
 
             dictationChoicesBuilder.Clear();
             dictationChoicesBuilder.AddCommandChoice(configChoice);
+            dictationChoicesBuilder.AddCommandChoice(spanishHelp);
             dictationChoicesBuilder.AddScentence("No", (string s) => { dictationChoicesBuilder.Clear(); dictationChoicesBuilder.AddCommandChoice(this); speechWrapper.UpdateGrammar(); });
+            dictationChoicesBuilder.AddScentence("Clear the screen", (string s) => Console.Clear());
 
             speechWrapper.UpdateGrammar();
         }

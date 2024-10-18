@@ -34,10 +34,10 @@ namespace Jenny.front.CommandChoices
             triggers = new Dictionary<string, DictationChoicesBuilder.SpeechAction>
             {
                 { "I want to update some of your config", OnConfig },
-                { "update your config", OnConfig },
-                { "update your configuration", OnConfig },
+                { "update config", OnConfig },
+                { "update configuration", OnConfig },
                 { "Change some settings", OnConfig },
-                { "Update some of your settings", OnConfig },
+                { "Update some settings", OnConfig },
                 { "I want to update some of your settings", OnConfig },
             };
         }
@@ -49,13 +49,27 @@ namespace Jenny.front.CommandChoices
             dictationChoicesBuilder.Clear();
             dictationChoicesBuilder.AddScentence("volume up", (string o) => { volumeService.VolumeUp(); logService.LogAssistant("Volume: " + volumeService.Volume); });
             dictationChoicesBuilder.AddScentence("volume down", (string o) => { volumeService.VolumeDown(); logService.LogAssistant("Volume: " + volumeService.Volume); });
-            dictationChoicesBuilder.AddScentence("set volume", (string o) => { logService.LogAssistant("Volume: " + volumeService.Volume); });
+            dictationChoicesBuilder.AddScentence("set volume", (string o) => { SetVolume(); });
+            dictationChoicesBuilder.AddScentence("Say something", (string o) => { voiceSynth.Speak("Hoyaaaaaaaa"); });
             speechWrapper.UpdateGrammar();
 
             logService.LogWithColor($"Volume: {volumeService.Volume}", ConsoleColor.Green);
             logService.LogWithColor($"- Volume up ", ConsoleColor.Cyan);
             logService.LogWithColor($"- Volume down ", ConsoleColor.Cyan);
             logService.LogWithColor($"- Set Volume ", ConsoleColor.Cyan);
+        }
+
+        private void SetVolume()
+        {
+            voiceSynth.SpeakAndWrite("What Volume do you want it?");
+            dictationChoicesBuilder.Clear();
+            dictationChoicesBuilder.NumbersBetween(1,100, (string awnser) =>
+            {
+                int volume = int.Parse(awnser);
+                volumeService.SetVolume(volume);
+                logService.LogAssistant("Volume: " + volumeService.Volume);
+            });
+            speechWrapper.UpdateGrammar();
         }
     }
 }

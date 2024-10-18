@@ -32,7 +32,7 @@ namespace Jenny_front
             dictationChoicesBuilder.AddCommandChoice(entry);
 
             SpeechRecognitionWrapper speechWrapper = host.Services.GetService<SpeechRecognitionWrapper>()!;
-            dictationChoicesBuilder.updateGrammar = speechWrapper.UpdateGrammar;
+            dictationChoicesBuilder.updateGrammerFunction = speechWrapper.UpdateGrammar;
             speechWrapper.UpdateGrammar();
 
             VoiceSynthWrapper voiceSynthWrapper = host.Services.GetService<VoiceSynthWrapper>()!;

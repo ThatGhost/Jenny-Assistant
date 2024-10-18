@@ -34,6 +34,15 @@ namespace Jenny.Core
             };
         }
 
+        public void UpdateLanguage(string language)
+        {
+            voiceSelectionParams = new VoiceSelectionParams
+            {
+                LanguageCode = language,
+                SsmlGender = SsmlVoiceGender.Female,
+            };
+        }
+
         public void Speak(string command)
         {
             var input = new SynthesisInput { Text = command };

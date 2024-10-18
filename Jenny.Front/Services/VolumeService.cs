@@ -29,6 +29,11 @@ namespace Jenny.front.Services
                 defaultPlaybackDevice.Volume -= 5;
         }
 
+        public void SetVolume(int volume)
+        {
+            defaultPlaybackDevice.Volume = volume;
+        }
+
         public double Volume { get { return defaultPlaybackDevice.Volume; } }
     }
 }

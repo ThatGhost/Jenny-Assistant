@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Speech.Recognition;
 using System.Text;
@@ -10,14 +11,14 @@ namespace Jenny.Core
     public class DictationChoicesBuilder
     {
         public delegate void SpeechAction(string o);
-        public delegate void UpdateGrammar();
+        public delegate void NoParamDelegate();
 
 
         Dictionary<string, SpeechAction> scentencesActions = new Dictionary<string, SpeechAction>();
         public CommandChoice? EntryCommand { private get; set; }
-        public UpdateGrammar updateGrammar { private get; set; }
-
-        public CancellationToken Token { get; set; }
+        public NoParamDelegate updateGrammerFunction;
+        public NoParamDelegate onStop;
+        public CultureInfo cultureInfo { private get; set; }
 
         private readonly LogService logService;
 
@@ -73,6 +74,7 @@ namespace Jenny.Core
 
             // builder
             GrammarBuilder grammarBuilder = new GrammarBuilder();
+            grammarBuilder.Culture = cultureInfo;
             grammarBuilder.Append(commands);
 
             // build
@@ -84,9 +86,24 @@ namespace Jenny.Core
             scentencesActions.Add("Stop", (string o) =>
             {
                 logService.LogUser("Stop command given!");
+
+                // start from beginning
                 Clear();
                 AddCommandChoice(EntryCommand!);
-                updateGrammar.Invoke();
+
+                // trigger any distructors
+                if(onStop != null && onStop.GetInvocationList().Length > 0)
+                {
+                    onStop.Invoke();
+                    foreach (var command in onStop.GetInvocationList())
+                    {
+                        onStop -= (command as NoParamDelegate);
+                    }
+                }
+
+
+                // update the grammer to start from the beginning
+                updateGrammerFunction.Invoke();
             });
         }
     }

@@ -26,6 +26,7 @@ namespace Jenny.front
 
             Services.AddTransient<CC_Entry>();
             Services.AddTransient<CC_Config>();
+            Services.AddTransient<CC_SpanishHelp>();
         }
     }
 }
