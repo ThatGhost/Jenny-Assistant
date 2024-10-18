@@ -34,8 +34,17 @@ namespace Jenny.Core
         }
 
         public void Stop() => synthesizer.Dispose();
-        public void VolumeUp() => synthesizer.Volume++;
-        public void VolumeDown() => synthesizer.Volume++;
+        public void VolumeUp()
+        {
+            if(Volume < 100)
+                synthesizer.Volume++;
+        }
+
+        public void VolumeDown()
+        {
+            if(Volume > 0)
+                synthesizer.Volume--;
+        }
 
         public int Volume { get { return synthesizer.Volume; } }
     }
