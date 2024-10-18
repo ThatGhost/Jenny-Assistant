@@ -11,6 +11,7 @@ namespace Jenny.Core
         private readonly TextToSpeechClient textToSpeechClient;
         private readonly VoiceSelectionParams voiceSelectionParams;
         private readonly AudioConfig audioConfig;
+        public string GoogleVoiceApiKey { private get; set; }
 
         public VoiceSynthWrapper()
         {
@@ -20,7 +21,7 @@ namespace Jenny.Core
             */
 
             TextToSpeechClientBuilder builder = new TextToSpeechClientBuilder();
-            builder.ApiKey = "--REDACTED--";
+            builder.ApiKey = GoogleVoiceApiKey;
             textToSpeechClient = builder.Build();
             voiceSelectionParams = new VoiceSelectionParams
             {

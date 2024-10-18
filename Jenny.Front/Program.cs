@@ -2,6 +2,7 @@
 using Jenny.Core;
 using Jenny.front.CommandChoices;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
 using Jenny.front;
 
 namespace Jenny_front
@@ -13,6 +14,8 @@ namespace Jenny_front
         static void Main(string[] args)
         {
             HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
+            builder.Configuration.AddUserSecrets<Program>();
+
             Installer.Install(builder.Services);
 
             StartListening(builder);
@@ -31,6 +34,10 @@ namespace Jenny_front
             SpeechRecognitionWrapper speechWrapper = host.Services.GetService<SpeechRecognitionWrapper>()!;
             dictationChoicesBuilder.updateGrammar = speechWrapper.UpdateGrammar;
             speechWrapper.UpdateGrammar();
+
+            VoiceSynthWrapper voiceSynthWrapper = host.Services.GetService<VoiceSynthWrapper>()!;
+            var googleApiKey = builder.Configuration["Google:ApiKey"]; // secret api key
+            voiceSynthWrapper.GoogleVoiceApiKey = googleApiKey!;
 
             Console.WriteLine("Setup complete");
 
