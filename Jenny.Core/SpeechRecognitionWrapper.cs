@@ -24,6 +24,7 @@ namespace Jenny.Core
 
         public void UpdateGrammar()
         {
+            recognizer.UnloadAllGrammars();
             recognizer.LoadGrammar(choicesBuilder.BuildGrammar());
         }
 
@@ -34,6 +35,7 @@ namespace Jenny.Core
 
         private void recognizer_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
+            Console.WriteLine($"You: {e.Result.Text}");
             choicesBuilder.InvokeAction(e.Result.Text);
         }
     }

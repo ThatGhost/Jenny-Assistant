@@ -43,9 +43,12 @@ namespace Jenny.front.CommandChoices
             dictationChoicesBuilder.AddScentence("volume down", () => { voiceSynth.VolumeDown(); Console.WriteLine("Volume: " + voiceSynth.Volume); });
             speechWrapper.UpdateGrammar();
 
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Volume: " + voiceSynth.Volume);
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine(" - volume up");
             Console.WriteLine(" - volume down");
+            Console.ForegroundColor = ConsoleColor.Gray;
         }
     }
 }

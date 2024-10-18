@@ -37,6 +37,7 @@ namespace Jenny.front.CommandChoices
 
             dictationChoicesBuilder.Clear();
             dictationChoicesBuilder.AddCommandChoice(configChoice);
+            dictationChoicesBuilder.AddScentence("No", () => { dictationChoicesBuilder.Clear(); dictationChoicesBuilder.AddCommandChoice(this); speechWrapper.UpdateGrammar(); });
 
             speechWrapper.UpdateGrammar();
         }
