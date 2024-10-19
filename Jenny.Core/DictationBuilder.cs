@@ -23,6 +23,8 @@ namespace Jenny.Core
         public CommandPath? EntryCommand { private get; set; }
         public NoParamDelegate updateGrammerFunction;
         public NoParamDelegate onStop;
+        public bool haveStop { private get; set; }
+        public string stopString = "stop";
 
         // logging what you say
         private readonly LogService logService;
@@ -31,6 +33,7 @@ namespace Jenny.Core
             LogService logService
             ) 
         {
+            this.haveStop = true;
             this.logService = logService; 
         }
 
@@ -58,6 +61,14 @@ namespace Jenny.Core
             for (int i = min; i <= max; i++)
             {
                 dictations.Add($"{i}", action);
+            }
+        }
+
+        public void AddScenentences(string[] scentences, SpeechAction action)
+        {
+            foreach(string s in scentences)
+            {
+                if (!dictations.ContainsKey(s)) dictations.Add(s, action);
             }
         }
 
@@ -90,7 +101,8 @@ namespace Jenny.Core
 
         private void addStopCommand()
         {
-            dictations.Add("Stop", (string o) =>
+            if (!haveStop) return;
+            dictations.Add(stopString, (string o) =>
             {
                 logService.LogUser("Stop command given!");
 

@@ -33,12 +33,8 @@ namespace Jenny.front.CommandChoices
 
             speechActions = new Dictionary<string, DictationBuilder.SpeechAction>
             {
-                { "I want to update some of your config", OnConfig },
-                { "update config", OnConfig },
-                { "update configuration", OnConfig },
-                { "Change some settings", OnConfig },
-                { "Update some settings", OnConfig },
-                { "I want to update some of your settings", OnConfig },
+                { "config", OnConfig },
+                { "settings", OnConfig },
             };
         }
 

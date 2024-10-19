@@ -35,6 +35,7 @@ namespace Jenny.front
         private static void AddServices(IServiceCollection Services)
         {
             Services.AddTransient<VolumeService>();
+            Services.AddTransient<SpanishDictationService>();
         }
 
         private static void AddCommandPaths(IServiceCollection services)
